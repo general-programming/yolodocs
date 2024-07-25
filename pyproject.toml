@@ -1,0 +1,8 @@
+[project]
+name = "yolodocs"
+description = "yolodocs"
+version = "0.0.1"
+dynamic = ["dependencies"]
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
