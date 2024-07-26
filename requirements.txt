@@ -5,3 +5,6 @@ psycopg2
 celery
 pywhispercpp
 alembic
+twilio
+python-magic
+redis

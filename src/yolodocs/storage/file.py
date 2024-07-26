@@ -1,7 +1,7 @@
 import os
 
 from yolodocs import config
-from yolodocs.storage import BaseStorage
+from yolodocs.storage.base import BaseStorage
 
 
 class FileStorage(BaseStorage):
@@ -17,3 +17,7 @@ class FileStorage(BaseStorage):
         file_path = os.path.join(self.path, key)
         with open(file_path, "wb") as f:
             f.write(data)
+
+    def exists(self, key: str):
+        file_path = os.path.join(self.path, key)
+        return os.path.exists(file_path)

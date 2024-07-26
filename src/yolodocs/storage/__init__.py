@@ -1,9 +1,47 @@
-class BaseStorage:
+from datetime import datetime
+
+from yolodocs import config
+from yolodocs.model import File, sm
+from yolodocs.storage.file import FileStorage
+
+
+def get_storage():
+    if config.FILE_STORAGE_TYPE == "file":
+        return FileStorage()
+
+    raise KeyError(f"Unknown storage type: {config.FILE_STORAGE_TYPE}")
+
+
+class DBStorage:
     def __init__(self):
-        pass
+        self.storage = get_storage()
+        self.db = sm()
+
+    def exists(self, key: str):
+        db_entry = self.db.query(File).filter(File.key == key).first()
+        return db_entry is not None
 
     def get(self, key: str):
-        raise NotImplementedError
+        return self.storage.get(key)
 
-    def put(self, key: str, data: bytes):
-        raise NotImplementedError
+    def put(
+        self,
+        key: str,
+        data: bytes,
+        mime: str = None,
+        created: datetime = None,
+    ):
+        if self.exists(key):
+            raise KeyError(f"File with key {key} already exists")
+
+        # TODO: created at
+        self.storage.put(key, data)
+
+        db_entry = File(
+            key=key,
+            created_at=created or datetime.now(),
+            size=len(data),
+            mime=mime,
+        )
+        self.db.add(db_entry)
+        self.db.commit()

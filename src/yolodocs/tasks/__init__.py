@@ -23,4 +23,4 @@ app.conf.broker_transport_options = {
 app.conf.worker_send_task_events = True
 app.conf.task_send_sent_event = True
 
-import yolodocs.tasks.parse
+import yolodocs.tasks.download  # noqa

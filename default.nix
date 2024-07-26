@@ -9,6 +9,8 @@ in pkgs.mkShell rec {
         pythonPackages.python
         pythonPackages.venvShellHook
         pythonPackages.psycopg2
+        pythonPackages.python-magic
+        pythonPackages.mypy
     ];
 
     postVenvCreation = ''
