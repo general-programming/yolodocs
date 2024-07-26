@@ -7,3 +7,6 @@ build/
 # dbs
 *.db
 files/
+
+# env
+.private_envrc
