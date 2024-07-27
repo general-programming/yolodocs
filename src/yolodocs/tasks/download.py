@@ -20,11 +20,6 @@ def download_url(
     url: str,
     date_created: datetime = None,
 ):
-    # TODO: Have this overwrite the existing file or snapshot it
-    if db_storage.exists(key):
-        print(f"File {key} already exists")
-        return
-
     r = requests.get(url)
     r.raise_for_status()
     mime_type = magic.from_buffer(r.content, mime=True)

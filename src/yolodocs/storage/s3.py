@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 
 import boto3
 import boto3.exceptions
@@ -35,12 +36,19 @@ class S3Storage(BaseStorage):
         key: str,
         data: bytes,
         mime: str = None,
+        created: datetime = None,
     ):
+        metadata = {}
+
+        if created:
+            metadata["created"] = created.isoformat()
+
         self.client.put_object(
             Bucket=self.bucket,
             Key=key,
             Body=data,
             ContentType=mime,
+            Metadata=metadata,
         )
 
     def exists(self, key: str):

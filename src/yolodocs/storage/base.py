@@ -1,3 +1,6 @@
+from datetime import datetime
+
+
 class BaseStorage:
     def __init__(self):
         pass
@@ -10,6 +13,7 @@ class BaseStorage:
         key: str,
         data: bytes,
         mime: str = None,
+        created: datetime = None,
     ):
         raise NotImplementedError
 

@@ -1,6 +1,7 @@
 import io
 import math
 import tempfile
+import time
 
 from pymediainfo import MediaInfo
 from pywhispercpp.model import Model as WhisperModel
@@ -11,19 +12,40 @@ from yolodocs.storage import DBStorage
 from yolodocs.tasks import app
 
 # TODO: Have the model be set in the config
-model = WhisperModel("models/ggml-large-v3.bin", n_threads=8)
-print(model.system_info())
+ml = "whispercpp"
+
+if ml == "whisperx":
+    import whisperx
+
+    model = whisperx.load_model(
+        "large-v3",
+        download_root="models",
+        device="cpu",
+        compute_type="int8",
+        threads=8,
+    )
+elif ml == "whispercpp":
+    model = WhisperModel("models/ggml-large-v3.bin", n_threads=8)
+    print(model.system_info())
 db_storage = DBStorage()
 
 
-def parse_vtt(segments):
+def parse_vtt(data):
     result = ""
 
-    for i in range(len(segments)):
-        seg = segments[i]
-        result += f"{i+1}\n"
-        result += f"{to_timestamp(seg.t0, separator=',')} --> {to_timestamp(seg.t1, separator=',')}\n"
-        result += f"{seg.text}\n\n"
+    if ml == "whisperx":
+        segments = data["segments"]
+        for i in range(len(segments)):
+            seg = segments[i]
+            result += f"{i+1}\n"
+            result += f"{to_timestamp(seg["start"], separator=',')} --> {to_timestamp(seg["end"], separator=',')}\n"
+            result += f"{seg["text"]}\n\n"
+    else:
+        for i in range(len(data)):
+            seg = data[i]
+            result += f"{i+1}\n"
+            result += f"{to_timestamp(seg.t0, separator=',')} --> {to_timestamp(seg.t1, separator=',')}\n"
+            result += f"{seg.text}\n\n"
 
     return result
 
@@ -52,6 +74,7 @@ def parse_media(key: str):
         media_length_ms = media_info.tracks[0].duration
         # DEBUG
         print(f"START {key} {media_length_ms / 1000}s {db_row.size} bytes")
+        process_start = time.time()
 
         # get tokens
         parsed_results = model.transcribe(f.name)
@@ -74,6 +97,9 @@ def parse_media(key: str):
         metadata_row.media_length = math.ceil(media_length_ms / 1000)
 
         # DEBUG
-        print(f"END {key} {media_length_ms / 1000}s {db_row.size} bytes {parsed_vtt}")
+        process_length = time.time() - process_start
+        print(
+            f"END {key} (took {math.ceil(process_length)}s) {media_length_ms / 1000}s {db_row.size} bytes {parsed_vtt}"
+        )
 
         db_storage.db.commit()

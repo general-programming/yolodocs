@@ -15,6 +15,6 @@ files = (
     .all()
 )
 
-for file in files:
-    print(len(files))
+for seq, file in enumerate(files):
+    print(f"{seq}/ {len(files)}")
     parse_media(file.key)

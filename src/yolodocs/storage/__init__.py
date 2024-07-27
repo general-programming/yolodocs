@@ -34,17 +34,19 @@ class DBStorage:
         mime: str = None,
         created: datetime = None,
     ):
-        if self.exists(key):
-            raise KeyError(f"File with key {key} already exists")
+        self.storage.put(key, data, mime, created)
 
-        # TODO: created at
-        self.storage.put(key, data, mime)
+        # update or create
+        db_entry = self.db.query(File).filter(File.key == key).first()
+        if not db_entry:
+            db_entry = File(
+                key=key,
+            )
+            self.db.add(db_entry)
 
-        db_entry = File(
-            key=key,
-            created_at=created or datetime.now(),
-            size=len(data),
-            mime=mime,
-        )
-        self.db.add(db_entry)
+        db_entry.size = len(data)
+        db_entry.mime = mime
+        db_entry.size = len(data)
+        db_entry = created or datetime.now()
+
         self.db.commit()

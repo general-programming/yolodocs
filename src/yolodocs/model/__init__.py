@@ -16,7 +16,7 @@ from sqlalchemy import (
     create_engine,
 )
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import Mapped, declarative_base, relationship, sessionmaker
 from sqlalchemy.sql import func
 
 db_url = os.environ.get("DB_URL", "sqlite:///test.db")
@@ -63,6 +63,11 @@ class File(Base):
     size = Column(Integer)
     mime = Column(String)
 
+    media_metadata: Mapped["MediaMetadata"] = relationship(
+        "MediaMetadata",
+        back_populates="file",
+    )
+
 
 class MediaType(PyEnum):
     audio = "audio"
@@ -74,7 +79,24 @@ class MediaType(PyEnum):
 class MediaMetadata(Base):
     __tablename__ = "media_metadata"
 
+    def to_dict(self):
+        return {
+            "file_id": self.file_id,
+            "filename": self.file.key,
+            "created": self.file.created_at,
+            "mime": self.file.mime,
+            "size": self.file.size,
+            "media_type": self.media_type,
+            "transcript": self.transcript,
+            "media_width": self.media_width,
+            "media_height": self.media_height,
+            "media_length": self.media_length,
+            "media_length_ms": self.media_length_ms,
+        }
+
+    # primary key + relation
     file_id = Column(ForeignKey("files.id"), primary_key=True)
+    file: Mapped["File"] = relationship("File", back_populates="media_metadata")
     media_type = Column(Enum(MediaType), nullable=False)
 
     # text transcript
