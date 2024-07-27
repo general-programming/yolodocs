@@ -40,7 +40,7 @@ class S3Storage(BaseStorage):
             Bucket=self.bucket,
             Key=key,
             Body=data,
-            ContentType=content_type,
+            ContentType=mime,
         )
 
     def exists(self, key: str):
