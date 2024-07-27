@@ -31,20 +31,16 @@ db_storage = DBStorage()
 
 
 def parse_vtt(data):
-    result = ""
+    result = "WEBVTT\n\n"
 
     if ml == "whisperx":
         segments = data["segments"]
-        for i in range(len(segments)):
-            seg = segments[i]
-            result += f"{i+1}\n"
-            result += f"{to_timestamp(seg["start"], separator=',')} --> {to_timestamp(seg["end"], separator=',')}\n"
+        for seg in segments:
+            result += f"{to_timestamp(seg["start"], separator='.')} --> {to_timestamp(seg["end"], separator='.')}\n"
             result += f"{seg["text"]}\n\n"
     else:
-        for i in range(len(data)):
-            seg = data[i]
-            result += f"{i+1}\n"
-            result += f"{to_timestamp(seg.t0, separator=',')} --> {to_timestamp(seg.t1, separator=',')}\n"
+        for seg in data:
+            result += f"{to_timestamp(seg.t0, separator='.')} --> {to_timestamp(seg.t1, separator='.')}\n"
             result += f"{seg.text}\n\n"
 
     return result

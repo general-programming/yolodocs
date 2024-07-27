@@ -1,0 +1,73 @@
+@import './base.css';
+
+#app {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 2rem;
+  font-weight: normal;
+}
+
+a,
+.green {
+  text-decoration: none;
+  color: hsla(160, 100%, 37%, 1);
+  transition: 0.4s;
+  padding: 3px;
+}
+
+@media (hover: hover) {
+  a:hover {
+    background-color: hsla(160, 100%, 37%, 0.2);
+  }
+}
+
+#subtitles {
+  margin-left: 2vh;
+  max-height: 80vh;
+  overflow-y: scroll;
+  border: 1px solid rgba(255, 255, 255, .5);
+}
+
+#subtitles::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+
+#subtitles::-webkit-scrollbar-thumb {
+  background-color: #03a9f4;
+  box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+#subtitles li {
+  padding: 10px 15px;
+  list-style-type: none;
+}
+
+#subtitles .timestamp {
+  background-color: #03a9f4;
+  color: black;
+  padding: 5px;
+  font-weight: bold;
+  border-radius: 5px;
+  width: 9rem;
+  text-align: center;
+  display: inline-block;
+
+}
+
+#subtitles li.current {
+  background-color: rgba(255,255,255,0.15);
+}
+
+th {
+  text-align: left;
+}
+
+.flex-split {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex-split section {
+  flex: 1 1 50%;
+}

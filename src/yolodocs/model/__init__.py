@@ -5,6 +5,7 @@ from enum import unique
 from typing import Generator
 
 from sqlalchemy import (
+    JSON,
     Column,
     DateTime,
     Enum,
@@ -15,6 +16,7 @@ from sqlalchemy import (
     UnicodeText,
     create_engine,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import Mapped, declarative_base, relationship, sessionmaker
 from sqlalchemy.sql import func
@@ -22,6 +24,11 @@ from sqlalchemy.sql import func
 db_url = os.environ.get("DB_URL", "sqlite:///test.db")
 if "sqlite" in db_url:
     print("WARNING: Local SQLite DB in use, this may be unfavorable.")
+
+if "postgres" in db_url:
+    JSONType = JSONB
+else:
+    JSONType = JSON
 
 # sync db
 engine = create_engine(
@@ -92,6 +99,7 @@ class MediaMetadata(Base):
             "media_height": self.media_height,
             "media_length": self.media_length,
             "media_length_ms": self.media_length_ms,
+            "metadata": self.meta,
         }
 
     # primary key + relation
@@ -109,3 +117,6 @@ class MediaMetadata(Base):
     # media metadata
     media_length = Column(Integer)
     media_length_ms = Column(Integer)
+
+    # extra metadata
+    meta = Column(JSONType)

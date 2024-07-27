@@ -12,7 +12,9 @@ db_storage = DBStorage()
 
 @router.get("/")
 def list_media():
-    media = db_storage.db.query(MediaMetadata).all()
+    media = (
+        db_storage.db.query(MediaMetadata).join(File).order_by(File.created_at).all()
+    )
     return [x.to_dict() for x in media]
 
 
