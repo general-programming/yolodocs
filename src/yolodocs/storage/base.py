@@ -2,7 +2,7 @@ class BaseStorage:
     def __init__(self):
         pass
 
-    def get(self, key: str):
+    def get(self, key: str) -> bytes:
         raise NotImplementedError
 
     def put(self, key: str, data: bytes):

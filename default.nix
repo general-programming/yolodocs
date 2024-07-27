@@ -11,6 +11,7 @@ in pkgs.mkShell rec {
         pythonPackages.psycopg2
         pythonPackages.python-magic
         pythonPackages.mypy
+        pythonPackages.pymediainfo
     ];
 
     postVenvCreation = ''

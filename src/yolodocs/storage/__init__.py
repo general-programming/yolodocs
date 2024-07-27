@@ -3,11 +3,14 @@ from datetime import datetime
 from yolodocs import config
 from yolodocs.model import File, sm
 from yolodocs.storage.file import FileStorage
+from yolodocs.storage.s3 import S3Storage
 
 
 def get_storage():
     if config.FILE_STORAGE_TYPE == "file":
         return FileStorage()
+    elif config.FILE_STORAGE_TYPE == "s3":
+        return S3Storage()
 
     raise KeyError(f"Unknown storage type: {config.FILE_STORAGE_TYPE}")
 
@@ -21,7 +24,7 @@ class DBStorage:
         db_entry = self.db.query(File).filter(File.key == key).first()
         return db_entry is not None
 
-    def get(self, key: str):
+    def get(self, key: str) -> bytes:
         return self.storage.get(key)
 
     def put(

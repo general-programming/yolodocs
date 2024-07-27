@@ -24,3 +24,4 @@ app.conf.worker_send_task_events = True
 app.conf.task_send_sent_event = True
 
 import yolodocs.tasks.download  # noqa
+import yolodocs.tasks.parse  # noqa

@@ -8,10 +8,10 @@ class FileStorage(BaseStorage):
     def __init__(self):
         self.path = config.FILE_STORAGE_FOLDER
 
-    def get(self, key: str):
+    def get(self, key: str) -> bytes:
         file_path = os.path.join(self.path, key)
         with open(file_path, "rb") as f:
-            return f
+            return f.read()
 
     def put(self, key: str, data: bytes):
         file_path = os.path.join(self.path, key)
