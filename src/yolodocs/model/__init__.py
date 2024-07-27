@@ -80,6 +80,10 @@ class MediaMetadata(Base):
     # text transcript
     transcript = Column(UnicodeText)
 
+    # dimensions
+    media_width = Column(Integer)
+    media_height = Column(Integer)
+
     # media metadata
     media_length = Column(Integer)
     media_length_ms = Column(Integer)
