@@ -38,7 +38,7 @@ class DBStorage:
             raise KeyError(f"File with key {key} already exists")
 
         # TODO: created at
-        self.storage.put(key, data)
+        self.storage.put(key, data, mime)
 
         db_entry = File(
             key=key,

@@ -5,7 +5,12 @@ class BaseStorage:
     def get(self, key: str) -> bytes:
         raise NotImplementedError
 
-    def put(self, key: str, data: bytes):
+    def put(
+        self,
+        key: str,
+        data: bytes,
+        mime: str = None,
+    ):
         raise NotImplementedError
 
     def exists(self, key: str):

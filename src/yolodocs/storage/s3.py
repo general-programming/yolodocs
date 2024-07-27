@@ -2,6 +2,7 @@ import os
 
 import boto3
 import boto3.exceptions
+import magic
 from mypy_boto3_s3 import S3Client
 
 from yolodocs import config
@@ -29,11 +30,17 @@ class S3Storage(BaseStorage):
         obj = self.client.get_object(Bucket=self.bucket, Key=key)
         return obj["Body"].read()
 
-    def put(self, key: str, data: bytes):
+    def put(
+        self,
+        key: str,
+        data: bytes,
+        mime: str = None,
+    ):
         self.client.put_object(
             Bucket=self.bucket,
             Key=key,
             Body=data,
+            ContentType=content_type,
         )
 
     def exists(self, key: str):

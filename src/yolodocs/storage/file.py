@@ -13,7 +13,12 @@ class FileStorage(BaseStorage):
         with open(file_path, "rb") as f:
             return f.read()
 
-    def put(self, key: str, data: bytes):
+    def put(
+        self,
+        key: str,
+        data: bytes,
+        mime: str,
+    ):
         file_path = os.path.join(self.path, key)
         with open(file_path, "wb") as f:
             f.write(data)
