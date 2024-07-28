@@ -11,11 +11,25 @@ db_storage = DBStorage()
 
 
 @router.get("/")
-def list_media():
+def list_media(page: int = 1, page_size: int = 100):
+    # calculate offset and limit
+    offset = (page - 1) * page_size
+
     media = (
-        db_storage.db.query(MediaMetadata).join(File).order_by(File.created_at).all()
+        db_storage.db.query(MediaMetadata)
+        .join(File)
+        .order_by(File.created_at)
+        .offset(offset)
+        .limit(page_size)
     )
-    return [x.to_dict() for x in media]
+
+    total_media = db_storage.db.query(MediaMetadata).count()
+
+    return {
+        "media": [x.to_dict() for x in media],
+        "total": total_media,
+        "pages": int(total_media / page_size) + 1,
+    }
 
 
 @router.get("/{filename}")

@@ -3,7 +3,5 @@ import MediaList from '../components/MediaList.vue'
 </script>
 
 <template>
-  <main>
-    <MediaList />
-  </main>
+  <MediaList />
 </template>
