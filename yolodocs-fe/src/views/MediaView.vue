@@ -1,23 +1,30 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, type Ref } from 'vue'
 
 import 'video.js/dist/video-js.css'
 import 'videojs-wavesurfer/dist/css/videojs.wavesurfer.css'
 
 import videojs from 'video.js'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import WaveSurfer from 'wavesurfer.js'
 import 'videojs-wavesurfer/dist/videojs.wavesurfer.js'
 
-import MediaInfo from '../components/MediaInfo.vue'
 import MediaSubtitles from '../components/MediaSubtitles.vue'
+
+import { type MediaListResult } from '../types/mediatypes'
+import type Player from 'video.js/dist/types/player'
 
 const route = useRoute()
 const mediaId = route.params.mediaId
 
-const mediaInfo = ref({})
+const mediaInfo = ref<MediaListResult>({
+  pages: 0,
+  total: 0,
+  items: []
+})
 const currentTime = ref(0)
-let player = null
+let player: Player | undefined = undefined
 
 // video player
 const options = {
@@ -65,9 +72,9 @@ function setupPlayer() {
   })
 }
 
-function seekPlayer(seconds) {
+function seekPlayer(seconds: number) {
   console.log('seeking to ', seconds / 1000)
-  player.currentTime(seconds / 1000)
+  if (player) player.currentTime(seconds / 1000)
 }
 
 onMounted(() => {
